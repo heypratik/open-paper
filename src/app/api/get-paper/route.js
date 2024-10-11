@@ -10,18 +10,18 @@ export async function GET(req, res) {
                 author_search_input: "", 		
                 title_search_input: "", 
         });
-    const fetchedPapers = result.data[0].value.data;
 
+    const fetchedPapers = result.data[0].value.data;
     let idsToScarpe = [];
 
     fetchedPapers.forEach((paper) => {
         const url = paper[2];
-        const extractUrl = url.match(/\(([^)]+)\)/)[1];
+        if (url) {
+          const extractUrl = url.match(/\(([^)]+)\)/)[1];
         const extractID = extractUrl.split("/").pop();
         idsToScarpe.push(extractID);
+        }
       });
-
-      console.log(idsToScarpe);
 
       let returnResult = []
 
@@ -38,6 +38,7 @@ export async function GET(req, res) {
             const data = await res.json();
             const paperSummary = data.summary;
             const paperTitle = data.title;
+            const paperId = data.id;
       
             const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
               method: "POST",
@@ -57,11 +58,32 @@ export async function GET(req, res) {
                 max_tokens: 100,
               }),
             });
-      
+
             const aiData = await aiResponse.json();
             const generatedSummary = aiData.choices[0].message.content.trim();
 
-            returnResult.push({ paperSummary, generatedSummary, paperTitle });
+            const aiResponseTitle = await fetch("https://api.openai.com/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+              },
+              body: JSON.stringify({
+                model: "gpt-4o-mini-2024-07-18",
+                messages: [
+                  {
+                    role: "user",
+                    content: `This is a title of a research paper. Convert this title into a super short title no more than 5 words while keeping it accurate. Text: ${paperTitle}`,
+                  },
+                ],
+                max_tokens: 100,
+              }),
+            });
+      
+            const aiDataTitle = await aiResponseTitle.json();
+            const generatedTitle = aiDataTitle.choices[0].message.content.trim();
+
+            returnResult.push({ paperSummary, generatedSummary, generatedTitle,  paperTitle, paperId });
 
           } catch (error) {
             console.error(error);
