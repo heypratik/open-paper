@@ -14,6 +14,7 @@ export async function GET(req, res) {
                 title_search_input: "", 
         });
 
+    console.log("Payload Issue")
     const fetchedPapers = result.data[0].value.data;
     let idsToScarpe = [];
 
