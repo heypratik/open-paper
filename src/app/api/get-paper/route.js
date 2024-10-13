@@ -1,9 +1,12 @@
 import { Client } from "@gradio/client";
 
 export async function GET(req, res) {
+
+  const {searchParams } = new URL(req.url);;
+  const paperDate = searchParams.get('date');
     const client = await Client.connect("huggingface/paper-central");
-    const result = await client.predict("/update_data_2", { 		
-                date: "2024-10-09", 		
+    const result = await client.predict("/update_data", { 		
+                date: paperDate, 		
                 cat_options_list: ["cs.*"], 		
                 hf_options_list: [], 		
                 conference_options_list: [], 		
