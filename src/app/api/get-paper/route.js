@@ -14,8 +14,8 @@ export async function GET(req, res) {
                 title_search_input: "", 
         });
 
-    console.log("Payload Issue")
-    const fetchedPapers = result.data[0].value.data;
+        const fetchedPapers = result.data[0].value.data;
+        console.log(fetchedPapers)
     let idsToScarpe = [];
 
     fetchedPapers.forEach((paper) => {
