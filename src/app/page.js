@@ -215,51 +215,54 @@ export default function Home() {
 
         {/* if papers is not null show the papers */}
         {papers && papers.map((paper, index) => (
-          <Card key={index} className="mb-4">
-            <CardHeader className="flex flex-row items-center justify-between gap-2 pb-0">
-              <div className="w-1/2"><CardTitle className=" leading-6">{paper.generatedTitle}</CardTitle>
-              <p className="mb-4">{paper.generatedSummary}</p></div>
-              <div className="w-1/2">
-                <ImageFetcher paperId={paper.paperId} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              {expanded[index] && (
-                <div className="mt-4 p-4 bg-gray-100 rounded-md">
-                  <h3 className="font-semibold mb-2">Abstract: {paper.paperTitle}</h3>
-                  <p>{paper.paperSummary}</p>
-                </div>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-2"
-                onClick={() => toggleExpand(index)}
-              >
-                {expanded[index] ? (
-                  <>
-                    <ChevronUp className="mr-2 h-4 w-4" />
-                    Hide Abstract
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="mr-2 h-4 w-4" />
-                    Show Abstract
-                  </>
-                )}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="ml-4"
-                onClick={() => window.open(`https://arxiv.org/pdf/${paper.paperId}`, "_blank")}
-              >
-                <FiExternalLink className="mr-2 h-4 w-4" />
-                Read Paper
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+  <Card key={index} className="mb-4">
+    <CardHeader className="flex flex-row items-center justify-between gap-2 pb-0">
+      <div className="w-1/2">
+        <CardTitle className="leading-6">{paper.generatedTitle}</CardTitle>
+        <p className="mb-4">{paper.generatedSummary}</p>
+      </div>
+      <div className="w-1/2">
+        {/* Ensure ImageFetcher re-renders by using a unique key */}
+        <ImageFetcher key={paper.paperId} paperId={paper.paperId} />
+      </div>
+    </CardHeader>
+    <CardContent>
+      {expanded[index] && (
+        <div className="mt-4 p-4 bg-gray-100 rounded-md">
+          <h3 className="font-semibold mb-2">Abstract: {paper.paperTitle}</h3>
+          <p>{paper.paperSummary}</p>
+        </div>
+      )}
+      <Button
+        variant="outline"
+        size="sm"
+        className="mt-2"
+        onClick={() => toggleExpand(index)}
+      >
+        {expanded[index] ? (
+          <>
+            <ChevronUp className="mr-2 h-4 w-4" />
+            Hide Abstract
+          </>
+        ) : (
+          <>
+            <ChevronDown className="mr-2 h-4 w-4" />
+            Show Abstract
+          </>
+        )}
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        className="ml-4"
+        onClick={() => window.open(`https://arxiv.org/pdf/${paper.paperId}`, "_blank")}
+      >
+        <FiExternalLink className="mr-2 h-4 w-4" />
+        Read Paper
+      </Button>
+    </CardContent>
+  </Card>
+))}
         {apiLoading && (
           <>
             <RiLoader4Fill fontSize={20} className="spinner" />
