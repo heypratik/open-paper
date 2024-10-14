@@ -214,7 +214,7 @@ export default function Home() {
         )}
 
         {/* if papers is not null show the papers */}
-        {papers && papers.map((paper, index) => (
+        {papers && !apiLoading &&  papers.map((paper, index) => (
   <Card key={index} className="mb-4">
     <CardHeader className="flex flex-row items-center justify-between gap-2 pb-0">
       <div className="w-1/2">
