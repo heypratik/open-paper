@@ -159,10 +159,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start bg-gray-200 min-h-screen p-10">
-      <div className='flex items-center justify-between  !max-w-[900px] min-w-[900px]'>
-        <h1 className="w-1/2 text-2xl font-semibold">Papers found ({papers ? papers.length : 0}).</h1>
-        <div className='w-1/2 flex items-center justify-end'>
+    <div className="flex flex-col items-center justify-start bg-gray-200 min-h-screen p-10 max-sm:p-5">
+      <div className='flex items-center justify-between max-w-[900px] min-w-[400px] w-full max-sm:flex-col max-sm:items-start max-sm:gap-3 max-sm:min-w-[200px]'>
+        <h1 className="max-sm:w-full w-1/2 text-2xl font-semibold">Papers found ({papers ? papers.length : 0}).</h1>
+        <div className='max-sm:w-full w-1/2 flex items-center justify-end max-sm:justify-start'>
         <Popover open={popoverOpen} onOpenChange={setPopoverOpen} disabled={apiLoading}>
         <PopoverTrigger asChild>
           <Button
@@ -194,7 +194,7 @@ export default function Home() {
       </Popover>
         </div>
         </div>
-      <div className="mt-6 flex items-center justify-center flex-col min-h-[400px] max-w-[900px] min-w-[400px] gap-3">
+      <div className="mt-6 flex items-center justify-center flex-col min-h-[400px] max-w-[900px] min-w-[400px] gap-3 max-sm:min-w-[200px]">
 
         {/* if paperr is null show a text saying no papers released for today */}
         {papers === null && !apiLoading &&  (
@@ -207,12 +207,12 @@ export default function Home() {
         {/* if papers is not null show the papers */}
         {papers && !apiLoading &&  papers.map((paper, index) => (
   <Card key={index} className="mb-4">
-    <CardHeader className="flex flex-row items-center justify-between gap-2 pb-0">
-      <div className="w-1/2">
+    <CardHeader className="flex flex-row items-center justify-between gap-2 pb-0 max-sm:flex-col-reverse">
+      <div className="w-1/2 max-sm:w-full max-sm:mt-2">
         <CardTitle className="leading-6">{paper.title}</CardTitle>
         <p className="mb-4">{paper.description}</p>
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2  max-sm:w-full">
         {/* Ensure ImageFetcher re-renders by using a unique key */}
         <ImageFetcher key={paper.pdfId} paperId={paper.pdfId} imageProcessed={paper.imageProcessed}/>
       </div>
