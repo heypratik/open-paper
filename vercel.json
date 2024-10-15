@@ -1,0 +1,12 @@
+{
+    "crons": [
+        {
+            "path": "/api/cron/paper",
+            "schedule": "*/30 * * * *"
+        },
+        {
+            "path": "/api/cron/image",
+            "schedule": "*/10 * * * *"
+        }
+    ]
+}

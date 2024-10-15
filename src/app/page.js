@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-const ImageFetcher = ({ paperId }) => {
+const ImageFetcher = ({ paperId, imageProcessed }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,6 +28,10 @@ const ImageFetcher = ({ paperId }) => {
   const fetchImage = useCallback(async () => {
     if (loading || imageUrl) return;
     setLoading(true);
+    if (!imageProcessed) {
+      setLoading(false);
+      return setError('Image not processed');
+    }
     try {
       const res = await fetch(`https://late-bird-7898.fly.dev/extract-images?url=https://arxiv.org/pdf/${paperId}`);
       if (!res.ok) {
@@ -146,19 +150,6 @@ export default function Home() {
     fetchData();
   }, [paperDate]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer <= 1) {
-          setLoading(false);
-          clearInterval(interval);
-          return 0;
-        }
-        return prevTimer - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const toggleExpand = (index) => {
     setExpanded((prevExpanded) => ({
@@ -218,19 +209,19 @@ export default function Home() {
   <Card key={index} className="mb-4">
     <CardHeader className="flex flex-row items-center justify-between gap-2 pb-0">
       <div className="w-1/2">
-        <CardTitle className="leading-6">{paper.generatedTitle}</CardTitle>
-        <p className="mb-4">{paper.generatedSummary}</p>
+        <CardTitle className="leading-6">{paper.title}</CardTitle>
+        <p className="mb-4">{paper.description}</p>
       </div>
       <div className="w-1/2">
         {/* Ensure ImageFetcher re-renders by using a unique key */}
-        <ImageFetcher key={paper.paperId} paperId={paper.paperId} />
+        <ImageFetcher key={paper.pdfId} paperId={paper.pdfId} imageProcessed={paper.imageProcessed}/>
       </div>
     </CardHeader>
     <CardContent>
       {expanded[index] && (
         <div className="mt-4 p-4 bg-gray-100 rounded-md">
-          <h3 className="font-semibold mb-2">Abstract: {paper.paperTitle}</h3>
-          <p>{paper.paperSummary}</p>
+          <h3 className="font-semibold mb-2">Abstract: {paper.abstractTitle}</h3>
+          <p>{paper.abstract}</p>
         </div>
       )}
       <Button
@@ -255,7 +246,7 @@ export default function Home() {
         variant="outline"
         size="sm"
         className="ml-4"
-        onClick={() => window.open(`https://arxiv.org/pdf/${paper.paperId}`, "_blank")}
+        onClick={() => window.open(`https://arxiv.org/pdf/${paper.pdfId}`, "_blank")}
       >
         <FiExternalLink className="mr-2 h-4 w-4" />
         Read Paper
@@ -266,7 +257,7 @@ export default function Home() {
         {apiLoading && (
           <>
             <RiLoader4Fill fontSize={20} className="spinner" />
-            <p className="text-sm mt-2">Huggingface free spaces is super slow. ETA {timer}s</p>
+            <p className="text-sm mt-2">Get your reading glasses ready.</p>
           </>
         )}
       </div>
